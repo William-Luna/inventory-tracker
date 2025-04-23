@@ -1,0 +1,17 @@
+# root-level
+/node_modules
+/frontend/node_modules
+/backend/target
+
+# IDEs
+*.iml
+*.log
+*.class
+.DS_Store
+
+# env config
+*.env
+
+# Spring Boot
+backend/src/main/resources/application.properties
+backend/src/main/resources/application.yml
