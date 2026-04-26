@@ -61,8 +61,8 @@ export default function Home() {
       <div className="container">
         <header className="page-header">
           <div>
-            <h1 className="title">Inventory Dashboard</h1>
-            <p className="subtitle">Welcome user.</p>
+            <h1 className="title">Inventory</h1>
+            <p className="subtitle">All items in your collection.</p>
           </div>
           <Link className="button" href="/items/new">
             Add item
@@ -70,7 +70,6 @@ export default function Home() {
         </header>
 
         <section className="card">
-        <h3 className="subtitle">Inventory</h3>
           {isLoading ? (
             <p className="empty">Loading items…</p>
           ) : error ? (
@@ -118,9 +117,6 @@ export default function Home() {
               </tbody>
             </table>
           )}
-        </section>
-        <section className="card">
-            <h3 className="subtitle">Analytics</h3>
         </section>
         <p className="helper">
         </p>
