@@ -32,6 +32,7 @@ const initialState: FormState = {
 
 export default function NewItemPage() {
   const [form, setForm] = useState<FormState>(initialState);
+  const [isSold, setIsSold] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -48,12 +49,13 @@ export default function NewItemPage() {
       const payload = {
         name: form.name,
         category: form.category || null,
-        buyPrice: form.buyPrice ? Number(form.buyPrice) : null,
+        buyPrice: form.buyPrice ? Number(form.buyPrice) : 0,
         buyDate: form.buyDate || null,
-        sellPrice: form.sellPrice ? Number(form.sellPrice) : null,
-        sellDate: form.sellDate || null,
-        postagePrice: form.postagePrice ? Number(form.postagePrice) : null,
-        feesPrice: form.feesPrice ? Number(form.feesPrice) : null,
+        sellPrice: isSold && form.sellPrice ? Number(form.sellPrice) : null,
+        sellDate: isSold ? form.sellDate || null : null,
+        postagePrice:
+          isSold && form.postagePrice ? Number(form.postagePrice) : null,
+        feesPrice: isSold && form.feesPrice ? Number(form.feesPrice) : null,
         photoUrl: form.photoUrl || null,
       };
 
@@ -68,6 +70,7 @@ export default function NewItemPage() {
       }
 
       setForm(initialState);
+      setIsSold(false);
       setMessage("Item created. You can add another or return to the list.");
     } catch (err) {
       setMessage(
@@ -108,6 +111,7 @@ export default function NewItemPage() {
               <label className="field">
                 Category
                 <input
+                  required
                   value={form.category}
                   onChange={(event) =>
                     handleChange("category", event.target.value)
@@ -118,6 +122,7 @@ export default function NewItemPage() {
               <label className="field">
                 Buy Price
                 <input
+                  required
                   type="number"
                   step="0.01"
                   value={form.buyPrice}
@@ -130,6 +135,7 @@ export default function NewItemPage() {
               <label className="field">
                 Buy Date
                 <input
+                  required
                   type="date"
                   value={form.buyDate}
                   onChange={(event) =>
@@ -137,52 +143,80 @@ export default function NewItemPage() {
                   }
                 />
               </label>
-              <label className="field">
-                Sell Price
+            </div>
+            <div className="form-section-header">
+              <span className="section-label">Sold details</span>
+              <label className="toggle" htmlFor="is-sold">
                 <input
-                  type="number"
-                  step="0.01"
-                  value={form.sellPrice}
-                  onChange={(event) =>
-                    handleChange("sellPrice", event.target.value)
-                  }
-                  placeholder="0.00"
+                  id="is-sold"
+                  type="checkbox"
+                  checked={isSold}
+                  onChange={(event) => setIsSold(event.target.checked)}
                 />
+                <span className="toggle-track" aria-hidden="true">
+                  <span className="toggle-thumb" />
+                </span>
+                <span>{isSold ? "Sold" : "Not sold yet"}</span>
               </label>
-              <label className="field">
-                Sell Date
-                <input
-                  type="date"
-                  value={form.sellDate}
-                  onChange={(event) =>
-                    handleChange("sellDate", event.target.value)
-                  }
-                />
-              </label>
-              <label className="field">
-                Postage
-                <input
-                  type="number"
-                  step="0.01"
-                  value={form.postagePrice}
-                  onChange={(event) =>
-                    handleChange("postagePrice", event.target.value)
-                  }
-                  placeholder="0.00"
-                />
-              </label>
-              <label className="field">
-                Fees
-                <input
-                  type="number"
-                  step="0.01"
-                  value={form.feesPrice}
-                  onChange={(event) =>
-                    handleChange("feesPrice", event.target.value)
-                  }
-                  placeholder="0.00"
-                />
-              </label>
+            </div>
+            <fieldset
+              className={`sell-fields ${!isSold ? "is-disabled" : ""}`}
+              disabled={!isSold}
+            >
+              <div className="form-grid">
+                <label className="field">
+                  Sell Price
+                  <input
+                    required={isSold}
+                    type="number"
+                    step="0.01"
+                    value={form.sellPrice}
+                    onChange={(event) =>
+                      handleChange("sellPrice", event.target.value)
+                    }
+                    placeholder="0.00"
+                  />
+                </label>
+                <label className="field">
+                  Sell Date
+                  <input
+                    required={isSold}
+                    type="date"
+                    value={form.sellDate}
+                    onChange={(event) =>
+                      handleChange("sellDate", event.target.value)
+                    }
+                  />
+                </label>
+                <label className="field">
+                  Postage
+                  <input
+                    required={isSold}
+                    type="number"
+                    step="0.01"
+                    value={form.postagePrice}
+                    onChange={(event) =>
+                      handleChange("postagePrice", event.target.value)
+                    }
+                    placeholder="0.00"
+                  />
+                </label>
+                <label className="field">
+                  Fees
+                  <input
+                    required={isSold}
+                    type="number"
+                    step="0.01"
+                    value={form.feesPrice}
+                    onChange={(event) =>
+                      handleChange("feesPrice", event.target.value)
+                    }
+                    placeholder="0.00"
+                  />
+                </label>
+              </div>
+            </fieldset>
+            <div className="form-grid">
               <label className="field">
                 Photo URL
                 <input
