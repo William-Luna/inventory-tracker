@@ -15,7 +15,7 @@ export default function UpcomingFeaturesPage() {
 
         <div className="bg-white shadow-md rounded-2xl p-6 text-left">
           <h2 className="text-xl font-semibold mb-4">
-            What’s Coming Next
+            Features:
           </h2>
 
           <ul className="list-disc list-inside space-y-2 text-gray-700">

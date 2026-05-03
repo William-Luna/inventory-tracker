@@ -94,7 +94,11 @@ export default function Home() {
                   const isSold = Boolean(item.sellDate);
                   return (
                     <tr key={item.id}>
-                      <td>{item.name}</td>
+                      <td>
+                        <Link className="text-link" href={`/items/${item.id}`}>
+                          {item.name}
+                        </Link>
+                      </td>
                       <td>{item.category ?? "—"}</td>
                       <td>
                         {item.buyPrice != null
