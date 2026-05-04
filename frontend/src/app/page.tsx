@@ -62,7 +62,7 @@ export default function Home() {
         <header className="page-header">
           <div>
             <h1 className="title">Inventory Dashboard</h1>
-            <p className="subtitle">Welcome user.</p>
+            <p className="subtitle">Welcome Luser.</p>
           </div>
           <Link className="button" href="/items/new">
             Add item
@@ -70,7 +70,12 @@ export default function Home() {
         </header>
 
         <section className="card">
-        <h3 className="subtitle">Inventory</h3>
+        <div className="card-header">
+            <h3 className="subtitle">Inventory Overview</h3>
+            <Link href="/items">
+                View All
+            </Link>
+        </div>
           {isLoading ? (
             <p className="empty">Loading items…</p>
           ) : error ? (
@@ -120,7 +125,12 @@ export default function Home() {
           )}
         </section>
         <section className="card">
+            <div className="card-header">
             <h3 className="subtitle">Analytics</h3>
+            <Link href="/items">
+                View All
+            </Link>
+            </div>
         </section>
         <p className="helper">
         </p>

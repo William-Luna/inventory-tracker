@@ -1,5 +1,5 @@
 "use client";
-
+import BackButton from "@/app/_components/BackButton";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -89,9 +89,9 @@ export default function NewItemPage() {
             <h1 className="title">Add item</h1>
             <p className="subtitle">Log a new item into inventory.</p>
           </div>
-          <Link className="button secondary" href="/">
-            Back to list
-          </Link>
+          <BackButton className="button secondary" fallbackHref="/">
+            Back
+          </BackButton>
         </header>
 
         <section className="card">
