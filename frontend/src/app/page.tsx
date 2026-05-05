@@ -62,7 +62,7 @@ export default function Home() {
         <header className="page-header">
           <div>
             <h1 className="title">Inventory Dashboard</h1>
-            <p className="subtitle">Welcome Luser.</p>
+            <p className="subtitle">Welcome user.</p>
           </div>
           <Link className="button" href="/items/new">
             Add item
@@ -100,7 +100,11 @@ export default function Home() {
                   const isSold = Boolean(item.sellDate);
                   return (
                     <tr key={item.id}>
-                      <td>{item.name}</td>
+                      <td>
+                        <Link className="text-link" href={`/items/${item.id}`}>
+                          {item.name}
+                        </Link>
+                      </td>
                       <td>{item.category ?? "—"}</td>
                       <td>
                         {item.buyPrice != null
