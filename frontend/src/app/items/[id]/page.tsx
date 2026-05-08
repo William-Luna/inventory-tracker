@@ -1,4 +1,5 @@
 import BackButton from "@/app/_components/BackButton";
+import DeleteItemButton from "@/app/_components/DeleteItemButton";
 import Link from "next/link";
 
 const API_BASE =
@@ -128,6 +129,7 @@ export default async function ItemDetailsPage({
             <Link className="button" href={`/items/${item.id}/edit`}>
               Edit item
             </Link>
+            <DeleteItemButton itemId={item.id} itemName={item.name} />
             <BackButton className="button secondary" fallbackHref="/">
               Back
             </BackButton>
