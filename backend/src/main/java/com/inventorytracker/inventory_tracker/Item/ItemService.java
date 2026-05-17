@@ -48,6 +48,12 @@ public class ItemService {
                 .collect(Collectors.toList());
     }
 
+    public List<Item> getItemsByLocation(String location) {
+        return itemRepository.findAll().stream()
+                .filter( item -> location.equals(item.getLocation()))
+                .collect(Collectors.toList());
+    }
+
     public Item addItem (Item item) {
         itemRepository.save(item);
         return item;
@@ -66,6 +72,7 @@ public class ItemService {
             itemToBeUpdated.setFeesPrice(updatedItem.getFeesPrice());
             itemToBeUpdated.setPostagePrice(updatedItem.getPostagePrice());
             itemToBeUpdated.setPhotoUrl(updatedItem.getPhotoUrl());
+            itemToBeUpdated.setLocation(updatedItem.getLocation());
 
             itemRepository.save(itemToBeUpdated);
             return itemToBeUpdated;

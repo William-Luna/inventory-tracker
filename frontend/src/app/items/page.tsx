@@ -84,6 +84,7 @@ export default function Home() {
                 <tr>
                   <th>Name</th>
                   <th>Category</th>
+                  <th>Location</th>
                   <th>Buy Price</th>
                   <th>Sell Price</th>
                   <th>Status</th>
@@ -100,6 +101,7 @@ export default function Home() {
                         </Link>
                       </td>
                       <td>{item.category ?? "—"}</td>
+                      <td>{item.location ?? "—"}</td>
                       <td>
                         {item.buyPrice != null
                           ? `$${item.buyPrice}`

@@ -27,20 +27,22 @@ public class Item {
     private BigDecimal feesPrice;
     @Column(name = "photo_url")
     private String photoUrl;
+    private String location;
 
     public Item() {
         // Default constructor required by JPA
     }
 
-    public Item(int id, String name, String category, BigDecimal buyPrice, Date buyDate) {
+    public Item(int id, String name, String category, BigDecimal buyPrice, Date buyDate, String location) {
         this.id = id;
         this.name = name;
         this.category = category;
         this.buyPrice = buyPrice;
         this.buyDate = buyDate;
+        this.location = location;
     }
 
-    public Item(int id, String name, String category, BigDecimal buyPrice, Date buyDate, BigDecimal sellPrice, Date sellDate, BigDecimal postagePrice, BigDecimal feesPrice, String photoUrl) {
+    public Item(int id, String name, String category, BigDecimal buyPrice, Date buyDate, BigDecimal sellPrice, Date sellDate, BigDecimal postagePrice, BigDecimal feesPrice, String photoUrl, String location) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -51,6 +53,7 @@ public class Item {
         this.postagePrice = postagePrice;
         this.feesPrice = feesPrice;
         this.photoUrl = photoUrl;
+        this.location = location;
     }
 
     public Integer getId() {
@@ -132,4 +135,8 @@ public class Item {
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
     }
+
+    public String getLocation() {return location;}
+
+    public void setLocation(String location) {this.location = location;}
 }

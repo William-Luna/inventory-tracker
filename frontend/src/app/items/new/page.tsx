@@ -16,6 +16,7 @@ type FormState = {
   postagePrice: string;
   feesPrice: string;
   photoUrl: string;
+  location: string;
 };
 
 const initialState: FormState = {
@@ -28,6 +29,7 @@ const initialState: FormState = {
   postagePrice: "",
   feesPrice: "",
   photoUrl: "",
+  location: ""
 };
 
 export default function NewItemPage() {
@@ -57,6 +59,7 @@ export default function NewItemPage() {
           isSold && form.postagePrice ? Number(form.postagePrice) : null,
         feesPrice: isSold && form.feesPrice ? Number(form.feesPrice) : null,
         photoUrl: form.photoUrl || null,
+        location: form.location || null,
       };
 
       const response = await fetch(`${API_BASE}/api/items`, {
@@ -117,6 +120,15 @@ export default function NewItemPage() {
                     handleChange("category", event.target.value)
                   }
                   placeholder="Trading Cards"
+                />
+              </label>
+              <label className="field">
+                Location
+                <input
+                  value={form.location}
+                  onChange={(event) =>
+                    handleChange("location", event.target.value)
+                  }
                 />
               </label>
               <label className="field">

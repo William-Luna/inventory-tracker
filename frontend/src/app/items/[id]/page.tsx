@@ -16,6 +16,7 @@ type Item = {
   postagePrice?: number | string | null;
   feesPrice?: number | string | null;
   photoUrl?: string | null;
+  location?: string | null;
 };
 
 type ItemDetailsPageProps = {
@@ -159,6 +160,10 @@ export default async function ItemDetailsPage({
             <div className="detail-row">
               <span>Category</span>
               <strong>{item.category ?? "-"}</strong>
+            </div>
+            <div className="detail-row">
+              <span>Location</span>
+              <strong>{item.location ?? "-"}</strong>
             </div>
             <div className="detail-row">
               <span>Status</span>
