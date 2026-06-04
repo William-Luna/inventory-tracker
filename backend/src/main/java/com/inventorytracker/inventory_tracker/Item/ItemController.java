@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -35,8 +34,10 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Item> getItem(@PathVariable Integer id) {
-        return itemService.getItemById(id);
+    public ResponseEntity<Item> getItem(@PathVariable Integer id) {
+        return itemService.getItemById(id)
+                .map(item -> new ResponseEntity<>(item, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
@@ -59,8 +60,9 @@ public class ItemController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteItem(@PathVariable Integer id) {
-        itemService.deleteItem(id);
-        return new ResponseEntity<>("Player deleted successfully.", HttpStatus.OK);
+    public ResponseEntity<Void> deleteItem(@PathVariable Integer id) {
+        boolean deleted = itemService.deleteItem(id);
+        if (!deleted) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        else return new ResponseEntity<>(HttpStatus.OK);
     }
 }

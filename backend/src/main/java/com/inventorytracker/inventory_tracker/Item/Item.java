@@ -1,6 +1,7 @@
 package com.inventorytracker.inventory_tracker.Item;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -11,11 +12,16 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @NotBlank
     private String name;
+    @NotBlank
     private String category;
+    @NotNull
+    @PositiveOrZero
     @Column(name = "buy_price")
     private BigDecimal buyPrice;
     @Column(name = "buy_date")
+    @NotNull
     private Date buyDate;
     @Column(name = "sell_price")
     private BigDecimal sellPrice;
