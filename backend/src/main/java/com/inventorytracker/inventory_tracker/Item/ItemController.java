@@ -1,5 +1,6 @@
 package com.inventorytracker.inventory_tracker.Item;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +42,7 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<Item> addItem(@RequestBody Item item) {
+    public ResponseEntity<Item> addItem(@Valid @RequestBody Item item) {
         Item createdItem = itemService.addItem(item);
         return new ResponseEntity<>(createdItem, HttpStatus.CREATED);
     }

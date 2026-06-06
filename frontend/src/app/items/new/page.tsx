@@ -69,7 +69,8 @@ export default function NewItemPage() {
       });
 
       if (!response.ok) {
-        throw new Error("Unable to create item.");
+        const err = await response.json();
+        throw new Error(err.error ?? "Unable to create item.");
       }
 
       setForm(initialState);
