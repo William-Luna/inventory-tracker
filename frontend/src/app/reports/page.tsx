@@ -1,5 +1,5 @@
 import UpcomingFeaturesPage from "../_components/UpcomingFeaturesPage";
 
-export default function AnalyticsPage() {
+export default function ReportsPage() {
   return <UpcomingFeaturesPage />;
 }

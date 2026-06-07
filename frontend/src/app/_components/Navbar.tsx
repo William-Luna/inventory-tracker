@@ -5,8 +5,10 @@ import { usePathname } from "next/navigation";
 
 const navItems = [
   { href: "/", label: "Dashboard" },
-  { href: "/items", label: "Inventory" },
-  { href: "/analytics", label: "Analytics" },
+  { href: "/items", label: "My Items" },
+  { href: "/sales", label: "Sales"},
+  { href: "/reports", label: "Reports" },
+  { href: "/login", label: "Login"}
 ];
 
 export default function Navbar() {
