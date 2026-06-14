@@ -32,6 +32,10 @@ public class ItemService {
         return itemRepository.findBySellDateIsNull();
     }
 
+    public List<Item> getSoldItems() {
+        return itemRepository.findBySellDateIsNotNull();
+    }
+
     public List<Item> getSoldItems(Date beforeDate, Date afterDate) {
         return itemRepository.findBySellDateIsNotNull().stream()
                 .filter(item -> beforeDate.before(item.getSellDate()) && afterDate.after(item.getSellDate()))

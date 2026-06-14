@@ -24,7 +24,7 @@ export default function Home() {
     let isMounted = true;
     const loadItems = async () => {
       try {
-        const response = await fetch(`${API_BASE}/api/items`, {
+        const response = await fetch(`${API_BASE}/api/items?unsold=true`, {
           cache: "no-store",
         });
         if (!response.ok) {
@@ -62,7 +62,7 @@ export default function Home() {
         <header className="page-header">
           <div>
             <h1 className="title">Inventory</h1>
-            <p className="subtitle">All items in your collection.</p>
+            <p className="subtitle">Displaying All unsold items.</p>
           </div>
           <Link className="button" href="/items/new">
             Add item

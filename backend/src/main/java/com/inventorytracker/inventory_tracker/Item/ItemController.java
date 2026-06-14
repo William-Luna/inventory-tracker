@@ -26,8 +26,10 @@ public class ItemController {
             @RequestParam(required = false) Date dateSoldBefore,
             @RequestParam(required = false) Date dateSoldAfter,
             @RequestParam(required = false) String category,
-            @RequestParam(required = false) Boolean unsold) {
+            @RequestParam(required = false) Boolean unsold,
+            @RequestParam(required = false) Boolean sold) {
         if (Boolean.TRUE.equals(unsold)) return itemService.getUnsoldItems(); //unsold param
+        else if (Boolean.TRUE.equals(sold)) return itemService.getSoldItems();
         else if (category != null) return itemService.getItemsByCategory(category); //category param
         else if (dateSoldBefore != null && dateSoldAfter != null) return itemService.getSoldItems(dateSoldBefore, dateSoldAfter); //sold items between dates param
         else if (name != null) return itemService.getItemsByName(name); //specific name param
@@ -63,7 +65,7 @@ public class ItemController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteItem(@PathVariable Integer id) {
         boolean deleted = itemService.deleteItem(id);
-        if (!deleted) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        else return new ResponseEntity<>(HttpStatus.OK);
+        if (!deleted) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        else return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
