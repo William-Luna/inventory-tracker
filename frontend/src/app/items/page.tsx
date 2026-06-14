@@ -7,6 +7,7 @@ type Item = {
   id: number;
   name: string;
   category?: string | null;
+  location?: string | null;
   buyPrice?: number | null;
   sellPrice?: number | null;
   sellDate?: string | null;
