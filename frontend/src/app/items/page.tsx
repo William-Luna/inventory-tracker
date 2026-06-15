@@ -8,13 +8,32 @@ type Item = {
   name: string;
   category?: string | null;
   location?: string | null;
-  buyPrice?: number | null;
-  sellPrice?: number | null;
-  sellDate?: string | null;
+  buyPrice?: number | string | null;
+  buyDate?: string | number | null;
 };
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+
+const formatCurrency = (value?: number | string | null) => {
+  if (value == null || value === "") {
+    return "—";
+  }
+
+  return `$${value}`;
+};
+
+const formatDate = (value?: string | number | null) => {
+  if (value == null || value === "") {
+    return "—";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(new Date(value));
+};
 
 export default function Home() {
   const [items, setItems] = useState<Item[]>([]);
@@ -80,47 +99,37 @@ export default function Home() {
               No items yet. Add your first item to start tracking.
             </p>
           ) : (
-            <table className="table">
+            <table className="table fixed-table">
+              <colgroup>
+                <col style={{ width: "14%" }} />
+                <col style={{ width: "30%" }} />
+                <col style={{ width: "18%" }} />
+                <col style={{ width: "14%" }} />
+                <col style={{ width: "24%" }} />
+              </colgroup>
               <thead>
                 <tr>
+                  <th>Buy Date</th>
                   <th>Name</th>
                   <th>Category</th>
-                  <th>Location</th>
                   <th>Buy Price</th>
-                  <th>Sell Price</th>
-                  <th>Status</th>
+                  <th>Location</th>
                 </tr>
               </thead>
               <tbody>
-                {items.map((item) => {
-                  const isSold = Boolean(item.sellDate);
-                  return (
-                    <tr key={item.id}>
-                      <td>
-                        <Link className="text-link" href={`/items/${item.id}`}>
-                          {item.name}
-                        </Link>
-                      </td>
-                      <td>{item.category ?? "—"}</td>
-                      <td>{item.location ?? "—"}</td>
-                      <td>
-                        {item.buyPrice != null
-                          ? `$${item.buyPrice}`
-                          : "—"}
-                      </td>
-                      <td>
-                        {item.sellPrice != null
-                          ? `$${item.sellPrice}`
-                          : "—"}
-                      </td>
-                      <td>
-                        <span className={`badge ${isSold ? "sold" : ""}`}>
-                          {isSold ? "Sold" : "Unsold"}
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {items.map((item) => (
+                  <tr key={item.id}>
+                    <td>{formatDate(item.buyDate)}</td>
+                    <td>
+                      <Link className="text-link" href={`/items/${item.id}`}>
+                        {item.name}
+                      </Link>
+                    </td>
+                    <td>{item.category ?? "—"}</td>
+                    <td>{formatCurrency(item.buyPrice)}</td>
+                    <td>{item.location ?? "—"}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           )}

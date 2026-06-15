@@ -7,14 +7,35 @@ type Item = {
   id: number;
   name: string;
   category?: string | null;
-  location?: string | null;
-  buyPrice?: number | null;
-  sellPrice?: number | null;
-  sellDate?: string | null;
+  buyPrice?: number | string | null;
+  sellPrice?: number | string | null;
+  sellDate?: string | number | null;
+  feesPrice?: number | string | null;
+  postagePrice?: number | string | null;
 };
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+
+const formatCurrency = (value?: number | string | null) => {
+  if (value == null || value === "") {
+    return "—";
+  }
+
+  return `$${value}`;
+};
+
+const formatDate = (value?: string | number | null) => {
+  if (value == null || value === "") {
+    return "—";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(new Date(value));
+};
 
 export default function SalesPage() {
   const [items, setItems] = useState<Item[]>([]);
@@ -78,43 +99,46 @@ export default function SalesPage() {
           ) : items.length === 0 ? (
             <p className="empty">No sold items yet.</p>
           ) : (
-            <table className="table">
+            <table className="table fixed-table">
+              <colgroup>
+                <col style={{ width: "12%" }} />
+                <col style={{ width: "20%" }} />
+                <col style={{ width: "14%" }} />
+                <col style={{ width: "11%" }} />
+                <col style={{ width: "11%" }} />
+                <col style={{ width: "10%" }} />
+                <col style={{ width: "10%" }} />
+                <col style={{ width: "12%" }} />
+              </colgroup>
               <thead>
                 <tr>
+                  <th>Sell Date</th>
                   <th>Name</th>
                   <th>Category</th>
-                  <th>Location</th>
                   <th>Buy Price</th>
                   <th>Sell Price</th>
-                  <th>Status</th>
+                  <th>Fees</th>
+                  <th>Postage</th>
+                  <th>P&amp;L</th>
                 </tr>
               </thead>
               <tbody>
-                {items.map((item) => {
-                  const isSold = Boolean(item.sellDate);
-                  return (
-                    <tr key={item.id}>
-                      <td>
-                        <Link className="text-link" href={`/items/${item.id}`}>
-                          {item.name}
-                        </Link>
-                      </td>
-                      <td>{item.category ?? "—"}</td>
-                      <td>{item.location ?? "—"}</td>
-                      <td>
-                        {item.buyPrice != null ? `$${item.buyPrice}` : "—"}
-                      </td>
-                      <td>
-                        {item.sellPrice != null ? `$${item.sellPrice}` : "—"}
-                      </td>
-                      <td>
-                        <span className={`badge ${isSold ? "sold" : ""}`}>
-                          {isSold ? "Sold" : "Unsold"}
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {items.map((item) => (
+                  <tr key={item.id}>
+                    <td>{formatDate(item.sellDate)}</td>
+                    <td>
+                      <Link className="text-link" href={`/items/${item.id}`}>
+                        {item.name}
+                      </Link>
+                    </td>
+                    <td>{item.category ?? "—"}</td>
+                    <td>{formatCurrency(item.buyPrice)}</td>
+                    <td>{formatCurrency(item.sellPrice)}</td>
+                    <td>{formatCurrency(item.feesPrice)}</td>
+                    <td>{formatCurrency(item.postagePrice)}</td>
+                    <td aria-label="Profit and loss"></td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           )}

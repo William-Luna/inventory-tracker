@@ -113,10 +113,20 @@ main {
   box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
 }
 
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
+}
+
+.fixed-table {
+  table-layout: fixed;
 }
 
 .table th,
@@ -124,6 +134,13 @@ main {
   text-align: left;
   padding: 12px 10px;
   border-bottom: 1px solid var(--border);
+}
+
+.fixed-table th,
+.fixed-table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .table th {
@@ -400,7 +417,8 @@ main {
   }
 
   .detail-layout,
-  .detail-grid {
+  .detail-grid,
+  .dashboard-grid {
     grid-template-columns: 1fr;
   }
 }

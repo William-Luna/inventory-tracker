@@ -7,16 +7,53 @@ type Item = {
   id: number;
   name: string;
   category?: string | null;
-  buyPrice?: number | null;
-  sellPrice?: number | null;
-  sellDate?: string | null;
+  buyPrice?: number | string | null;
+  buyDate?: string | number | null;
+  sellPrice?: number | string | null;
+  sellDate?: string | number | null;
 };
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
 
+const formatCurrency = (value?: number | string | null) => {
+  if (value == null || value === "") {
+    return "—";
+  }
+
+  return `$${value}`;
+};
+
+const formatDate = (value?: string | number | null) => {
+  if (value == null || value === "") {
+    return "—";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(new Date(value));
+};
+
+const getTime = (value?: string | number | null) => {
+  if (value == null || value === "") {
+    return 0;
+  }
+
+  const time = new Date(value).getTime();
+  return Number.isNaN(time) ? 0 : time;
+};
+
+const byRecentBuyDate = (a: Item, b: Item) =>
+  getTime(b.buyDate) - getTime(a.buyDate);
+
+const byRecentSellDate = (a: Item, b: Item) =>
+  getTime(b.sellDate) - getTime(a.sellDate);
+
 export default function Home() {
-  const [items, setItems] = useState<Item[]>([]);
+  const [unsoldItems, setUnsoldItems] = useState<Item[]>([]);
+  const [soldItems, setSoldItems] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,15 +61,27 @@ export default function Home() {
     let isMounted = true;
     const loadItems = async () => {
       try {
-        const response = await fetch(`${API_BASE}/api/items`, {
-          cache: "no-store",
-        });
-        if (!response.ok) {
-          throw new Error("Unable to fetch items");
+        const [unsoldResponse, soldResponse] = await Promise.all([
+          fetch(`${API_BASE}/api/items?unsold=true`, {
+            cache: "no-store",
+          }),
+          fetch(`${API_BASE}/api/items?sold=true`, {
+            cache: "no-store",
+          }),
+        ]);
+
+        if (!unsoldResponse.ok || !soldResponse.ok) {
+          throw new Error("Unable to fetch dashboard items");
         }
-        const data = (await response.json()) as Item[];
+
+        const [unsoldData, soldData] = (await Promise.all([
+          unsoldResponse.json(),
+          soldResponse.json(),
+        ])) as [Item[], Item[]];
+
         if (isMounted) {
-          setItems(data);
+          setUnsoldItems([...unsoldData].sort(byRecentBuyDate).slice(0, 5));
+          setSoldItems([...soldData].sort(byRecentSellDate).slice(0, 5));
           setError(null);
         }
       } catch (err) {
@@ -40,7 +89,7 @@ export default function Home() {
           setError(
             err instanceof Error
               ? err.message
-              : "Something went wrong loading items."
+              : "Something went wrong loading dashboard items."
           );
         }
       } finally {
@@ -69,75 +118,97 @@ export default function Home() {
           </Link>
         </header>
 
-        <section className="card">
-        <div className="card-header">
-            <h3 className="subtitle">Inventory Overview</h3>
-            <Link href="/items">
+        <div className="dashboard-grid">
+          <section className="card">
+            <div className="card-header">
+              <h2 className="subtitle">Inventory</h2>
+              <Link className="text-link" href="/items">
                 View All
-            </Link>
-        </div>
-          {isLoading ? (
-            <p className="empty">Loading items…</p>
-          ) : error ? (
-            <p className="empty">{error}</p>
-          ) : items.length === 0 ? (
-            <p className="empty">
-              No items yet. Add your first item to start tracking.
-            </p>
-          ) : (
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Category</th>
-                  <th>Buy Price</th>
-                  <th>Sell Price</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item) => {
-                  const isSold = Boolean(item.sellDate);
-                  return (
+              </Link>
+            </div>
+
+            {isLoading ? (
+              <p className="empty">Loading inventory…</p>
+            ) : error ? (
+              <p className="empty">{error}</p>
+            ) : unsoldItems.length === 0 ? (
+              <p className="empty">No unsold items yet.</p>
+            ) : (
+              <table className="table fixed-table">
+                <colgroup>
+                  <col style={{ width: "28%" }} />
+                  <col style={{ width: "48%" }} />
+                  <col style={{ width: "24%" }} />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>Buy Date</th>
+                    <th>Name</th>
+                    <th>Buy Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {unsoldItems.map((item) => (
                     <tr key={item.id}>
+                      <td>{formatDate(item.buyDate)}</td>
                       <td>
                         <Link className="text-link" href={`/items/${item.id}`}>
                           {item.name}
                         </Link>
                       </td>
-                      <td>{item.category ?? "—"}</td>
-                      <td>
-                        {item.buyPrice != null
-                          ? `$${item.buyPrice}`
-                          : "—"}
-                      </td>
-                      <td>
-                        {item.sellPrice != null
-                          ? `$${item.sellPrice}`
-                          : "—"}
-                      </td>
-                      <td>
-                        <span className={`badge ${isSold ? "sold" : ""}`}>
-                          {isSold ? "Sold" : "Unsold"}
-                        </span>
-                      </td>
+                      <td>{formatCurrency(item.buyPrice)}</td>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          )}
-        </section>
-        <section className="card">
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </section>
+
+          <section className="card">
             <div className="card-header">
-            <h3 className="subtitle">Analytics</h3>
-            <Link href="/items">
+              <h2 className="subtitle">Sales</h2>
+              <Link className="text-link" href="/sales">
                 View All
-            </Link>
+              </Link>
             </div>
-        </section>
-        <p className="helper">
-        </p>
+
+            {isLoading ? (
+              <p className="empty">Loading sales…</p>
+            ) : error ? (
+              <p className="empty">{error}</p>
+            ) : soldItems.length === 0 ? (
+              <p className="empty">No sold items yet.</p>
+            ) : (
+              <table className="table fixed-table">
+                <colgroup>
+                  <col style={{ width: "28%" }} />
+                  <col style={{ width: "48%" }} />
+                  <col style={{ width: "24%" }} />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>Sell Date</th>
+                    <th>Name</th>
+                    <th>Sell Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {soldItems.map((item) => (
+                    <tr key={item.id}>
+                      <td>{formatDate(item.sellDate)}</td>
+                      <td>
+                        <Link className="text-link" href={`/items/${item.id}`}>
+                          {item.name}
+                        </Link>
+                      </td>
+                      <td>{formatCurrency(item.sellPrice)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </section>
+        </div>
       </div>
     </main>
   );
