@@ -48,6 +48,39 @@ const formatDate = (value?: string | number | null) => {
   }).format(new Date(value));
 };
 
+const toCents = (value?: number | string | null) => {
+  if (value == null || value === "") {
+    return 0;
+  }
+
+  const numberValue = Number(value);
+  return Number.isFinite(numberValue) ? Math.round(numberValue * 100) : 0;
+};
+
+const getProfitLossCents = (item: Item) =>
+  toCents(item.sellPrice) -
+  toCents(item.buyPrice) -
+  toCents(item.feesPrice) -
+  toCents(item.postagePrice);
+
+const formatCents = (cents: number) =>
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(cents / 100);
+
+const getProfitLossClassName = (cents: number) => {
+  if (cents > 0) {
+    return "profit-loss profit-loss--positive";
+  }
+
+  if (cents < 0) {
+    return "profit-loss profit-loss--negative";
+  }
+
+  return "profit-loss";
+};
+
 export default async function ItemDetailsPage({
   params,
 }: ItemDetailsPageProps) {
@@ -117,6 +150,7 @@ export default async function ItemDetailsPage({
   }
 
   const isSold = Boolean(item.sellDate);
+  const profitLossCents = getProfitLossCents(item);
 
   return (
     <main>
@@ -149,10 +183,6 @@ export default async function ItemDetailsPage({
           )}
 
           <div className="detail-grid">
-            <div className="detail-row">
-              <span>ID</span>
-              <strong>{item.id}</strong>
-            </div>
             <div className="detail-row">
               <span>Name</span>
               <strong>{item.name}</strong>
@@ -196,6 +226,12 @@ export default async function ItemDetailsPage({
             <div className="detail-row">
               <span>Fees</span>
               <strong>{formatCurrency(item.feesPrice)}</strong>
+            </div>
+            <div className="detail-row">
+              <span>P&amp;L</span>
+              <strong className={getProfitLossClassName(profitLossCents)}>
+                {formatCents(profitLossCents)}
+              </strong>
             </div>
             <div className="detail-row">
               <span>Photo URL</span>

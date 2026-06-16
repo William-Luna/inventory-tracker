@@ -37,6 +37,39 @@ const formatDate = (value?: string | number | null) => {
   }).format(new Date(value));
 };
 
+const toCents = (value?: number | string | null) => {
+  if (value == null || value === "") {
+    return 0;
+  }
+
+  const numberValue = Number(value);
+  return Number.isFinite(numberValue) ? Math.round(numberValue * 100) : 0;
+};
+
+const getProfitLossCents = (item: Item) =>
+  toCents(item.sellPrice) -
+  toCents(item.buyPrice) -
+  toCents(item.feesPrice) -
+  toCents(item.postagePrice);
+
+const formatCents = (cents: number) =>
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(cents / 100);
+
+const getProfitLossClassName = (cents: number) => {
+  if (cents > 0) {
+    return "profit-loss profit-loss--positive";
+  }
+
+  if (cents < 0) {
+    return "profit-loss profit-loss--negative";
+  }
+
+  return "profit-loss";
+};
+
 export default function SalesPage() {
   const [items, setItems] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -123,22 +156,28 @@ export default function SalesPage() {
                 </tr>
               </thead>
               <tbody>
-                {items.map((item) => (
-                  <tr key={item.id}>
-                    <td>{formatDate(item.sellDate)}</td>
-                    <td>
-                      <Link className="text-link" href={`/items/${item.id}`}>
-                        {item.name}
-                      </Link>
-                    </td>
-                    <td>{item.category ?? "—"}</td>
-                    <td>{formatCurrency(item.buyPrice)}</td>
-                    <td>{formatCurrency(item.sellPrice)}</td>
-                    <td>{formatCurrency(item.feesPrice)}</td>
-                    <td>{formatCurrency(item.postagePrice)}</td>
-                    <td aria-label="Profit and loss"></td>
-                  </tr>
-                ))}
+                {items.map((item) => {
+                  const profitLossCents = getProfitLossCents(item);
+
+                  return (
+                    <tr key={item.id}>
+                      <td>{formatDate(item.sellDate)}</td>
+                      <td>
+                        <Link className="text-link" href={`/items/${item.id}`}>
+                          {item.name}
+                        </Link>
+                      </td>
+                      <td>{item.category ?? "—"}</td>
+                      <td>{formatCurrency(item.buyPrice)}</td>
+                      <td>{formatCurrency(item.sellPrice)}</td>
+                      <td>{formatCurrency(item.feesPrice)}</td>
+                      <td>{formatCurrency(item.postagePrice)}</td>
+                      <td className={getProfitLossClassName(profitLossCents)}>
+                        {formatCents(profitLossCents)}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
