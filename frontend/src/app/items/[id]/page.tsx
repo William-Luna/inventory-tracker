@@ -1,5 +1,12 @@
 import BackButton from "@/app/_components/BackButton";
 import DeleteItemButton from "@/app/_components/DeleteItemButton";
+import {
+  formatCents,
+  formatCurrency,
+  formatDate,
+  getProfitLossCents,
+  getProfitLossClassName,
+} from "@/app/_utils/formatters";
 import Link from "next/link";
 
 const API_BASE =
@@ -23,62 +30,6 @@ type ItemDetailsPageProps = {
   params: Promise<{
     id: string;
   }>;
-};
-
-const formatCurrency = (value?: number | string | null) => {
-  if (value == null) {
-    return "-";
-  }
-
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(Number(value));
-};
-
-const formatDate = (value?: string | number | null) => {
-  if (!value) {
-    return "-";
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(value));
-};
-
-const toCents = (value?: number | string | null) => {
-  if (value == null || value === "") {
-    return 0;
-  }
-
-  const numberValue = Number(value);
-  return Number.isFinite(numberValue) ? Math.round(numberValue * 100) : 0;
-};
-
-const getProfitLossCents = (item: Item) =>
-  toCents(item.sellPrice) -
-  toCents(item.buyPrice) -
-  toCents(item.feesPrice) -
-  toCents(item.postagePrice);
-
-const formatCents = (cents: number) =>
-  new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(cents / 100);
-
-const getProfitLossClassName = (cents: number) => {
-  if (cents > 0) {
-    return "profit-loss profit-loss--positive";
-  }
-
-  if (cents < 0) {
-    return "profit-loss profit-loss--negative";
-  }
-
-  return "profit-loss";
 };
 
 export default async function ItemDetailsPage({
@@ -205,27 +156,27 @@ export default async function ItemDetailsPage({
             </div>
             <div className="detail-row">
               <span>Buy Price</span>
-              <strong>{formatCurrency(item.buyPrice)}</strong>
+              <strong>{formatCurrency(item.buyPrice, "-")}</strong>
             </div>
             <div className="detail-row">
               <span>Buy Date</span>
-              <strong>{formatDate(item.buyDate)}</strong>
+              <strong>{formatDate(item.buyDate, "-")}</strong>
             </div>
             <div className="detail-row">
               <span>Sell Price</span>
-              <strong>{formatCurrency(item.sellPrice)}</strong>
+              <strong>{formatCurrency(item.sellPrice, "-")}</strong>
             </div>
             <div className="detail-row">
               <span>Sell Date</span>
-              <strong>{formatDate(item.sellDate)}</strong>
+              <strong>{formatDate(item.sellDate, "-")}</strong>
             </div>
             <div className="detail-row">
               <span>Postage</span>
-              <strong>{formatCurrency(item.postagePrice)}</strong>
+              <strong>{formatCurrency(item.postagePrice, "-")}</strong>
             </div>
             <div className="detail-row">
               <span>Fees</span>
-              <strong>{formatCurrency(item.feesPrice)}</strong>
+              <strong>{formatCurrency(item.feesPrice, "-")}</strong>
             </div>
             <div className="detail-row">
               <span>P&amp;L</span>

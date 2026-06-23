@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { formatCurrency, formatDate } from "@/app/_utils/formatters";
+
 type Item = {
   id: number;
   name: string;
@@ -14,26 +16,6 @@ type Item = {
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
-
-const formatCurrency = (value?: number | string | null) => {
-  if (value == null || value === "") {
-    return "—";
-  }
-
-  return `$${value}`;
-};
-
-const formatDate = (value?: string | number | null) => {
-  if (value == null || value === "") {
-    return "—";
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  }).format(new Date(value));
-};
 
 export default function Home() {
   const [items, setItems] = useState<Item[]>([]);

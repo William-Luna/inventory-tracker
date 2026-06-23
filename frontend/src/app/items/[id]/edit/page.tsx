@@ -152,7 +152,7 @@ export default function EditItemPage() {
         location: form.location || null,
       };
 
-      const response = await fetch(`${API_BASE}/api/items`, {
+      const response = await fetch(`${API_BASE}/api/items/${itemId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

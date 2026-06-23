@@ -3,6 +3,14 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import {
+  formatCents,
+  formatCurrency,
+  formatDate,
+  getProfitLossCents,
+  getProfitLossClassName,
+} from "@/app/_utils/formatters";
+
 type Item = {
   id: number;
   name: string;
@@ -16,59 +24,6 @@ type Item = {
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
-
-const formatCurrency = (value?: number | string | null) => {
-  if (value == null || value === "") {
-    return "—";
-  }
-
-  return `$${value}`;
-};
-
-const formatDate = (value?: string | number | null) => {
-  if (value == null || value === "") {
-    return "—";
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  }).format(new Date(value));
-};
-
-const toCents = (value?: number | string | null) => {
-  if (value == null || value === "") {
-    return 0;
-  }
-
-  const numberValue = Number(value);
-  return Number.isFinite(numberValue) ? Math.round(numberValue * 100) : 0;
-};
-
-const getProfitLossCents = (item: Item) =>
-  toCents(item.sellPrice) -
-  toCents(item.buyPrice) -
-  toCents(item.feesPrice) -
-  toCents(item.postagePrice);
-
-const formatCents = (cents: number) =>
-  new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(cents / 100);
-
-const getProfitLossClassName = (cents: number) => {
-  if (cents > 0) {
-    return "profit-loss profit-loss--positive";
-  }
-
-  if (cents < 0) {
-    return "profit-loss profit-loss--negative";
-  }
-
-  return "profit-loss";
-};
 
 export default function SalesPage() {
   const [items, setItems] = useState<Item[]>([]);
