@@ -39,6 +39,7 @@ export const formatDate = (value: DateValue, fallback = "—") => {
   return Number.isNaN(date.getTime()) ? fallback : dateFormatter.format(date);
 };
 
+//convert number to cents (1.00 = 100 cents)
 export const toCents = (value: MoneyValue) => {
   if (value == null || value === "") {
     return 0;
@@ -48,6 +49,7 @@ export const toCents = (value: MoneyValue) => {
   return Number.isFinite(numberValue) ? Math.round(numberValue * 100) : 0;
 };
 
+//display cents to regular dollar format
 export const formatCents = (cents: number) =>
   currencyFormatter.format(cents / 100);
 
